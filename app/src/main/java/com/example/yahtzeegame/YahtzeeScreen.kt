@@ -5,11 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,17 +29,28 @@ fun YahtzeeScreen(
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
         Text(
-            text = "Yahtzee"
+            text = "Yahtzee",
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Text(
+            text = "Roll up to 3 times and hold dice between rolls.",
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = 8.dp,
+                alignment = Alignment.CenterHorizontally
+            )
         ) {
 
             viewModel.diceValues.forEachIndexed { index, value ->
@@ -54,14 +70,26 @@ fun YahtzeeScreen(
 
         if (!viewModel.gameOver) {
 
-            Text(
-                text = "Rolls: ${viewModel.rollCount}/3"
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Rolls",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Text(
+                    text = "${viewModel.rollCount}/3",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
 
             Button(
                 onClick = {
                     viewModel.rollWithCoroutine()
                 },
+                modifier = Modifier.fillMaxWidth(),
                 enabled = !viewModel.isRolling &&
                         viewModel.rollCount < 3
             ) {
@@ -80,21 +108,34 @@ fun YahtzeeScreen(
                 !viewModel.isRolling
             ) {
                 Text(
-                    text = "Tap a die to hold or release it before the next roll."
+                    text = "Tap a die to hold or release it before the next roll.",
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
             if (viewModel.categoryScores.isNotEmpty()) {
 
+                HorizontalDivider()
+
                 Text(
-                    text = "Current combinations"
+                    text = "Current Combinations",
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 viewModel.categoryScores.forEach { result ->
 
-                    Text(
-                        text = "${result.category.displayName()}: ${result.score}"
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = result.category.displayName()
+                        )
+
+                        Text(
+                            text = result.score.toString()
+                        )
+                    }
                 }
             }
 
@@ -103,8 +144,11 @@ fun YahtzeeScreen(
                 !viewModel.isRolling
             ) {
 
+                HorizontalDivider()
+
                 Text(
-                    text = "Choose a category"
+                    text = "Choose a Category",
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 viewModel.unusedCategories.forEach { category ->
@@ -114,10 +158,11 @@ fun YahtzeeScreen(
                         dice = viewModel.diceValues
                     )
 
-                    Button(
+                    OutlinedButton(
                         onClick = {
                             viewModel.selectCategory(category)
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = "${category.displayName()}: $score"
@@ -129,36 +174,64 @@ fun YahtzeeScreen(
 
         if (viewModel.savedScores.isNotEmpty()) {
 
+            HorizontalDivider()
+
             Text(
-                text = "Scorecard"
+                text = "Scorecard",
+                style = MaterialTheme.typography.titleMedium
             )
 
             viewModel.savedScores.forEach { result ->
 
-                Text(
-                    text = "${result.category.displayName()}: ${result.score}"
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = result.category.displayName()
+                    )
+
+                    Text(
+                        text = result.score.toString()
+                    )
+                }
             }
 
-            Text(
-                text = "Total Score: ${viewModel.totalScore}"
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Total Score",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Text(
+                    text = viewModel.totalScore.toString(),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
 
         if (viewModel.gameOver) {
 
+            HorizontalDivider()
+
             Text(
-                text = "Game Over"
+                text = "Game Over",
+                style = MaterialTheme.typography.headlineSmall
             )
 
             Text(
-                text = "Final Score: ${viewModel.totalScore}"
+                text = "Final Score: ${viewModel.totalScore}",
+                style = MaterialTheme.typography.titleLarge
             )
 
             Button(
                 onClick = {
                     viewModel.resetGame()
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("New Game")
             }
@@ -185,7 +258,8 @@ fun Die(
     }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
 
         Image(
@@ -194,16 +268,17 @@ fun Die(
             ),
             contentDescription = "Dice showing $value",
             modifier = Modifier
-                .size(56.dp)
+                .size(52.dp)
                 .clickable(
                     enabled = canHold,
                     onClick = onToggleHold
                 )
         )
 
-        if (isHeld) {
-            Text("HOLD")
-        }
+        Text(
+            text = if (isHeld) "HELD" else "",
+            style = MaterialTheme.typography.labelSmall
+        )
     }
 }
 

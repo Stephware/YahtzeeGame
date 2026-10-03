@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.yahtzeegame.ui.theme.YahtzeeGameTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -12,11 +13,14 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            val viewModel: YahtzeeViewModel = viewModel()
+            YahtzeeGameTheme {
 
-            YahtzeeScreen(
-                viewModel = viewModel
-            )
+                val viewModel: YahtzeeViewModel = viewModel()
+
+                YahtzeeScreen(
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }
