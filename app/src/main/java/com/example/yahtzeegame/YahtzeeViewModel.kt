@@ -4,8 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
-import androidx.compose.foundation.layout.Row
 
 class YahtzeeViewModel : ViewModel() {
 
@@ -19,10 +21,18 @@ class YahtzeeViewModel : ViewModel() {
         return Random.nextInt(1, 7)
     }
 
-    fun rollOnce() {
+    fun rollWithCoroutine() {
 
-        diceValues = List(5) {
-            rollDice()
+        viewModelScope.launch {
+
+            repeat(10) {
+
+                diceValues = List(5) {
+                    rollDice()
+                }
+
+                delay(100)
+            }
         }
     }
 }
