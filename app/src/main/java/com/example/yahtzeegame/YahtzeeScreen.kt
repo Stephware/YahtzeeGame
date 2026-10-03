@@ -41,6 +41,13 @@ fun YahtzeeScreen(
         ) {
             Text("Roll")
         }
+
+        viewModel.categoryScores.forEach { result ->
+
+            Text(
+                text = "${result.category}: ${result.score}"
+            )
+        }
     }
 }
 

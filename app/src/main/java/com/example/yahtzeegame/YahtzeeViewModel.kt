@@ -16,6 +16,11 @@ class YahtzeeViewModel : ViewModel() {
     )
         private set
 
+    var categoryScores by mutableStateOf(
+        emptyList<CategoryScore>()
+    )
+        private set
+
     private fun rollDice(): Int {
 
         return Random.nextInt(1, 7)
@@ -33,6 +38,25 @@ class YahtzeeViewModel : ViewModel() {
 
                 delay(100)
             }
+
+            evaluateDice()
         }
+    }
+
+    private fun evaluateDice() {
+
+        categoryScores =
+            DiceRules
+                .getAvailableCategories(diceValues)
+                .map { category ->
+
+                    CategoryScore(
+                        category = category,
+                        score = DiceRules.scoreFor(
+                            category = category,
+                            dice = diceValues
+                        )
+                    )
+                }
     }
 }
